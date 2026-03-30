@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Disbursement Entry</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5f5f5;
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+th {
+    background: #f0f0f0;
+}
+
+input, select, textarea {
+    width: 95%;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+label{
+    font-family: Arial;
+    font-size: small;
+    color: Red;
+
+}
+
+textarea { height: 30px; }
+
+.section-title {
+    background: #eee;
+    font-weight: bold;
+}
+
+.delete-btn {
+    color: red;
+    cursor: pointer;
+    text-align: center;
+}
+
+.add-btn, .submit-btn {
+    margin-top: 10px;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+.add-btn { background: green; }
+.submit-btn { background: blue; }
+.submit-btn1 { background: green; color: white; margin-top: 10px;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    color: white; }
+</style>
+</head>
+
+<body>
+
+<h3>Favouring Details</h3> <h4><td><button class="submit-btn1" onclick="submitData()">Loan Downsizing</button></td></h4>
+
+
+<table>
+<tbody id="tableBody">
+
+<!-- ROW PART 1 -->
+<tr class="row-group">
+<td>1</td>
+<td><input type="date"></td>
+<td><input type="number" placeholder="Loan Amount"></td>
+<td><input type="number" placeholder="Disbursal Amount"></td>
+<td><input type="number" placeholder="Amount to Hold"></td>
+<td><input type="text" placeholder="Hold Reason"></td>
+
+<td>
+<select onchange="togglechq(this)">
+<option>Pay Mode</option>
+<option>Cheque</option>
+<option>NEFT</option>
+</select>
+</td>
+
+<td> <label>cheque_no</label><input type="text" class="chq-field" placeholder="Cheque No" disabled></td>
+<td> <label>Cheque_referece_no</label><input type="text" class="chq-field" placeholder="Cheque_referece_no" disabled></td>
+<td> <label>Cheque_clearence_date</label><input type="text" class="chq-field" placeholder="Cheque_clearence_date" disabled></td>
+
+<td>
+<select onchange="toggleEMI(this)">
+<option>Product Flag</option>
+<option value="HL">HL</option>
+<option value="LAP">LAP</option>
+</select>
+</td>
+
+<td>
+<label>EMI/PRE-EMI</label>
+<select class="emi-field" disabled>
+<option>Select</option>
+<option>EMI</option>
+<option>Pre-EMI</option>
+</select>
+</td>
+
+</tr>
+
+<!-- ROW PART 2 -->
+<tr class="row-group">
+<td colspan="2"><select><option>Product Category</option></select></td>
+<td><label>Bank</label><input type="text" placeholder="HDFC BANK LTD" disabled></td>
+<td><label>IFSC</label><input type="text" placeholder="HDFC0003906" disabled></td>
+<td><label>Account Number</label><input type="text" placeholder="50200021387282" dis></td>
+
+<td>
+    <label>Disbursement Type</label>
+<select>
+<option>Disbursement Type</option>
+<option>Auto</option>
+<option>Manual</option>
+</select>
+</td>
+
+<td colspan="2"><textarea placeholder="Favouring Details"></textarea></td>
+
+<td><label>PaymentStatus</label><input type="text"  placeholder="Payment Status" disabled>
+
+</td>
+<td><button class="submit-btn1" onclick="submitData()">MovetoLMS</button></td>
+<td><button class="submit-btn1" onclick="submitData()">Cancelpayment</button></td>
+
+</tr>
+
+</tbody>
+</table>
+
+<button class="add-btn" onclick="addRow()">+ Add Row</button>
+<button class="submit-btn" onclick="submitData()">Submit</button>
+
+
+<h4>Notes & Validations</h4>
+<h5>1. In attached screenshot if Payment Mode is Cheque, then new field will appear with name “Cheque Number”, in which DM can add cheque number.</h5>
+<h5>2. There should be one more field with name “Disbursement Type”, with below Dropdown Auto and Manual</h5>
+<h5>3. Once DM update the details, case will be sent to Credit Team for approval, once approval is done by Credit Team, case will assign to next stage “LIV”.</h5>
+<h5>4. Tranche favouoring will aslo be move into faviouring tabs.</h5>
+<h5>5. Payment detials will be pass in LMS through new Payment API.</h5>
+<h5>6. LMS will send the current status of payment in every 10 min. IXL to refresh the payment status automatically in every 10 Min.</h5>
+<h5>7. IFSC, Bank, Account number will be updated by default and will be fetch from the default bank.</h5>
+<h5>8. Red marked column to be created newly in LOS.</h5>
+<h5>9. Cheque reference number will be comibnation of branch_draft_id.</h5>
+<h5>10. MovetoLMS - If case is move to LMS but payment failed then this button will be enable to move the payment manually into LMS.</h5>
+
+<h5>11. CancelPayment - If payment mode is NEFT then cancel payment mode will enable until payment author done in LMS and if payment mode is cheque then this button will be enable until cheque clearnce mark in LMS.</h5>
+<h5>12. Loan Downsizing - this button will be enable for partially disburse cases. if loan to be downsized then we have to pass final_disbursal_flag as "Y" and loan amount as "0".</h5>
+<h5>13. Loan Downsizing - if customer want to downsize the loan with additional amount then </h5>
+
+
+<script>
+function toggleEMI(select) {
+    let row = select.closest("tr");
+    let emiField = row.querySelector(".emi-field");
+
+    if (select.value === "HL") {
+        emiField.disabled = false;
+    } else {
+        emiField.disabled = true;
+        emiField.value = "Select";
+    }
+}
+
+function togglechq(select) {
+    let row = select.closest("tr");
+    let chqField = row.querySelector(".chq-field");
+
+    if (select.value === "Cheque") {
+        chqField.disabled = false;
+    } else {
+        chqField.disabled = true;
+        chqField.value = "";
+    }
+}
+
+function addRow() {
+    let table = document.getElementById("tableBody");
+
+    let rows = table.querySelectorAll(".row-group");
+    let lastTwo = [rows[rows.length-2], rows[rows.length-1]];
+
+    let newRow1 = lastTwo[0].cloneNode(true);
+    let newRow2 = lastTwo[1].cloneNode(true);
+
+    // reset values
+    [newRow1, newRow2].forEach(row => {
+        row.querySelectorAll("input, textarea").forEach(el => el.value = "");
+        row.querySelectorAll("select").forEach(el => el.selectedIndex = 0);
+    });
+
+    // disable fields again
+    newRow1.querySelector(".emi-field").disabled = true;
+    newRow1.querySelector(".chq-field").disabled = true;
+
+    // update row number
+    let rowCount = (rows.length / 2) + 1;
+    newRow1.cells[0].innerText = rowCount;
+
+    table.appendChild(newRow1);
+    table.appendChild(newRow2);
+}
+
+function deleteRow(btn) {
+    let row1 = btn.closest("tr");
+    let row2 = row1.nextElementSibling;
+
+    row1.remove();
+    row2.remove();
+}
+
+function submitData() {
+    alert("Data submitted successfully");
+}
+</script>
+
+</body>
+</html>
