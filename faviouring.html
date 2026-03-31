@@ -55,6 +55,7 @@ textarea { height: 30px; }
 <body>
 
 <h3>Favouring Details</h3>
+<h6>Laon AMmount : 600000 Disbursed Amount : 300000 Branch : Chandigarh Tenure : 120 Months</h6>
 
 <table>
 <tbody id="tableBody">
@@ -62,8 +63,8 @@ textarea { height: 30px; }
 <tr class="row-group">
 <td>1</td>
 <td><input type="date"></td>
-<td><input type="number" placeholder="Loan Amount"></td>
-<td><input type="number" placeholder="Disbursal Amount"></td>
+<!--<td><input type="number" placeholder="Loan Amount"></td>-->
+<td><label>Disbursal Amount</label><input type="number" placeholder="Disbursal Amount"></td>
 <td><input type="number" placeholder="Amount to Hold"></td>
 <td><input type="text" placeholder="Hold Reason"></td>
 
@@ -100,7 +101,17 @@ textarea { height: 30px; }
 </tr>
 
 <tr class="row-group">
-<td colspan="2"><select><option>Product Category</option></select></td>
+    
+<td colspan="2">
+    <label>Product Category</label>
+    <select>
+    
+    <option>Product Category</option>
+    <option>F & F </option>
+    <option>Seller</option>
+    <option>Customer</option>
+
+</select></td>
 
 <td>
 <label>Bank</label>
