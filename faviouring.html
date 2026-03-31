@@ -22,10 +22,6 @@ th, td {
     padding: 8px;
 }
 
-th {
-    background: #f0f0f0;
-}
-
 input, select, textarea {
     width: 95%;
     padding: 6px;
@@ -34,24 +30,11 @@ input, select, textarea {
 }
 
 label{
-    font-family: Arial;
     font-size: small;
-    color: Red;
-
+    color: red;
 }
 
 textarea { height: 30px; }
-
-.section-title {
-    background: #eee;
-    font-weight: bold;
-}
-
-.delete-btn {
-    color: red;
-    cursor: pointer;
-    text-align: center;
-}
 
 .add-btn, .submit-btn {
     margin-top: 10px;
@@ -63,23 +46,19 @@ textarea { height: 30px; }
 
 .add-btn { background: green; }
 .submit-btn { background: blue; }
-.submit-btn1 { background: green; color: white; margin-top: 10px;
-    padding: 8px 15px;
-    border: none;
-    cursor: pointer;
-    color: white; }
+
+.submit-btn1 { background: green; color: white; padding: 8px 15px; border: none; cursor: pointer; }
+.submit-btn2 { background: red; color: white; padding: 8px 15px; border: none; cursor: pointer; }
 </style>
 </head>
 
 <body>
 
-<h3>Favouring Details</h3> <h4><td><button class="submit-btn1" onclick="submitData()">Loan Downsizing</button></td></h4>
-
+<h3>Favouring Details</h3>
 
 <table>
 <tbody id="tableBody">
 
-<!-- ROW PART 1 -->
 <tr class="row-group">
 <td>1</td>
 <td><input type="date"></td>
@@ -89,6 +68,7 @@ textarea { height: 30px; }
 <td><input type="text" placeholder="Hold Reason"></td>
 
 <td>
+<label>Paymode</label>
 <select onchange="togglechq(this)">
 <option>Pay Mode</option>
 <option>Cheque</option>
@@ -96,11 +76,12 @@ textarea { height: 30px; }
 </select>
 </td>
 
-<td> <label>cheque_no</label><input type="text" class="chq-field" placeholder="Cheque No" disabled></td>
-<td> <label>Cheque_referece_no</label><input type="text" class="chq-field" placeholder="Cheque_referece_no" disabled></td>
-<td> <label>Cheque_clearence_date</label><input type="text" class="chq-field" placeholder="Cheque_clearence_date" disabled></td>
+<td><label>Cheque No</label><input type="text" class="chq-field" disabled></td>
+<td><label>Cheque Ref No</label><input type="text" class="chq-field" disabled></td>
+<td><label>Clearance Date</label><input type="text" class="chq-field" disabled></td>
 
 <td>
+    <label>Product Flag</label>
 <select onchange="toggleEMI(this)">
 <option>Product Flag</option>
 <option value="HL">HL</option>
@@ -116,18 +97,25 @@ textarea { height: 30px; }
 <option>Pre-EMI</option>
 </select>
 </td>
-
 </tr>
 
-<!-- ROW PART 2 -->
 <tr class="row-group">
 <td colspan="2"><select><option>Product Category</option></select></td>
-<td><label>Bank</label><input type="text" placeholder="HDFC BANK LTD" disabled></td>
-<td><label>IFSC</label><input type="text" placeholder="HDFC0003906" disabled></td>
-<td><label>Account Number</label><input type="text" placeholder="50200021387282" dis></td>
 
 <td>
-    <label>Disbursement Type</label>
+<label>Bank</label>
+<select>
+<option>Select</option>
+<option>HDFC Bank LTD</option>
+<option>SBI LTD</option>
+</select>
+</td>
+
+<td><label>IFSC</label><input type="text" disabled></td>
+<td><label>Account Number</label><input type="text"></td>
+
+<td>
+<label>Payment Processing Mode</label>
 <select>
 <option>Disbursement Type</option>
 <option>Auto</option>
@@ -135,13 +123,12 @@ textarea { height: 30px; }
 </select>
 </td>
 
-<td colspan="2"><textarea placeholder="Favouring Details"></textarea></td>
+<td colspan="2"><textarea placeholder="Remarks if any"></textarea></td>
 
-<td><label>PaymentStatus</label><input type="text"  placeholder="Payment Status" disabled>
+<td><label>Payment Status</label><input type="text" disabled></td>
 
-</td>
-<td><button class="submit-btn1" onclick="submitData()">MovetoLMS</button></td>
-<td><button class="submit-btn1" onclick="submitData()">Cancelpayment</button></td>
+<td><button class="submit-btn1" onclick="submitData()">MoveToLMS</button></td>
+<td><button class="submit-btn2" onclick="submitData()">Cancel Payment</button></td>
 
 </tr>
 
@@ -150,26 +137,26 @@ textarea { height: 30px; }
 
 <button class="add-btn" onclick="addRow()">+ Add Row</button>
 <button class="submit-btn" onclick="submitData()">Submit</button>
-
+<button class="submit-btn1" onclick="loanDownsizing()">Loan Downsizing</button>
 
 <h4>Notes & Validations</h4>
-<h5>1. In attached screenshot if Payment Mode is Cheque, then new field will appear with name “Cheque Number”, in which DM can add cheque number.</h5>
-<h5>2. There should be one more field with name “Disbursement Type”, with below Dropdown Auto and Manual</h5>
+<h5>1. In attached screenshot if Payment Mode is Cheque, then new field will appear with name “Cheque Number”. this will be auto fill once receveid cheque number from Omni.</h5>
+<h5>2. There should be one more field with name “Payment Process mode”, with below Dropdown Auto and Manual</h5>
 <h5>3. Once DM update the details, case will be sent to Credit Team for approval, once approval is done by Credit Team, case will assign to next stage “LIV”.</h5>
-<h5>4. Tranche favouoring will aslo be move into faviouring tabs.</h5>
-<h5>5. Payment detials will be pass in LMS through new Payment API.</h5>
-<h5>6. LMS will send the current status of payment in every 10 min. IXL to refresh the payment status automatically in every 10 Min.</h5>
-<h5>7. IFSC, Bank, Account number will be updated by default and will be fetch from the default bank.</h5>
-<h5>8. Red marked column to be created newly in LOS.</h5>
-<h5>9. Cheque reference number will be comibnation of branch_draft_id.</h5>
-<h5>10. MovetoLMS - If case is move to LMS but payment failed then this button will be enable to move the payment manually into LMS.</h5>
-
-<h5>11. CancelPayment - If payment mode is NEFT then cancel payment mode will enable until payment author done in LMS and if payment mode is cheque then this button will be enable until cheque clearnce mark in LMS.</h5>
-<h5>12. Loan Downsizing - this button will be enable for partially disburse cases. if loan to be downsized then we have to pass final_disbursal_flag as "Y" and loan amount as "0".</h5>
-<h5>13. Loan Downsizing - if customer want to downsize the loan with additional amount then he has to create the new payment. </h5>
-
+<h5>4. For Tranche cases, if any payment created for any trache then Favouring is to be mandatory for that tranche. system will not allow DM to process the cases wihtout faviouring.</h5>
+<h5>5. Payment detials will be pass in LMS through new Payment API. In first attempt the payments will be move through "Move to LMS API" and if any payment failed initially then DM can push this manually to Omni. can we provide this right to DM or LIA team?</h5>
+<h5>6. LMS will send the current status of payment in every 10 min. IXL to refresh the payment status automatically in every 10 Min. if payment cleared then no need to refresh the status.</h5>
+<h5>7. IFSC, Bank, Account number will be updated by default and will be fetch from the default bank. user need to select it from the dropdown.</h5>
+<h5>8. Red marked column to be created in LOS.</h5>
+<h5>9. Cheque reference number will be comibnation of branch_draft_id and sequence. this will applicable for NEFT & Cheque</h5>
+<h5>10. MovetoLMS Button - If case is move to LMS but payment failed then this button will be enable to move the payment manually into LMS.</h5>
+<h5>11. CancelPayment button - If payment mode is NEFT or cheque then cancel payment button will be enable until cheque clearnce mark in LMS.</h5>
+<h5>12. Loan Downsizing - This button will be enable for partially disburse cases. if loan to be downsized then we have to pass final_disbursal_flag as "Y" and loan amount as "0".</h5>
+<h5>13. Loan Downsizing - if customer want to downsize the loan with additional amount then he has to create the new payment and pass final_disbursal_flag as "Y" and loan amount as "0". </h5>
 
 <script>
+
+// EMI Enable/Disable
 function toggleEMI(select) {
     let row = select.closest("tr");
     let emiField = row.querySelector(".emi-field");
@@ -182,38 +169,44 @@ function toggleEMI(select) {
     }
 }
 
+// Cheque / NEFT logic
 function togglechq(select) {
     let row = select.closest("tr");
-    let chqField = row.querySelector(".chq-field");
+    let chqFields = row.querySelectorAll(".chq-field");
 
-    if (select.value === "Cheque") {
-        chqField.disabled = false;
+    if (select.value === "Cheque" || select.value === "NEFT") {
+        chqFields.forEach((field, index) => {
+            field.disabled = false;
+
+            // Auto-fill Cheque Reference Number
+            if (index === 1) {
+                field.value = "CHD1201901";
+            }
+        });
     } else {
-        chqField.disabled = true;
-        chqField.value = "";
+        chqFields.forEach(field => {
+            field.disabled = true;
+            field.value = "";
+        });
     }
 }
 
+// Add Row
 function addRow() {
     let table = document.getElementById("tableBody");
-
     let rows = table.querySelectorAll(".row-group");
-    let lastTwo = [rows[rows.length-2], rows[rows.length-1]];
 
-    let newRow1 = lastTwo[0].cloneNode(true);
-    let newRow2 = lastTwo[1].cloneNode(true);
+    let newRow1 = rows[rows.length-2].cloneNode(true);
+    let newRow2 = rows[rows.length-1].cloneNode(true);
 
-    // reset values
     [newRow1, newRow2].forEach(row => {
         row.querySelectorAll("input, textarea").forEach(el => el.value = "");
         row.querySelectorAll("select").forEach(el => el.selectedIndex = 0);
     });
 
-    // disable fields again
+    newRow1.querySelectorAll(".chq-field").forEach(f => f.disabled = true);
     newRow1.querySelector(".emi-field").disabled = true;
-    newRow1.querySelector(".chq-field").disabled = true;
 
-    // update row number
     let rowCount = (rows.length / 2) + 1;
     newRow1.cells[0].innerText = rowCount;
 
@@ -221,17 +214,22 @@ function addRow() {
     table.appendChild(newRow2);
 }
 
-function deleteRow(btn) {
-    let row1 = btn.closest("tr");
-    let row2 = row1.nextElementSibling;
+// Loan Downsizing Confirmation
+function loanDownsizing() {
+    let confirmAction = confirm("Do you want to downsize the loan?");
 
-    row1.remove();
-    row2.remove();
+    if (confirmAction) {
+        alert("Loan downsizing processed");
+    } else {
+        alert("Loan downsizing cancelled");
+    }
 }
 
+// Submit
 function submitData() {
     alert("Data submitted successfully");
 }
+
 </script>
 
 </body>
